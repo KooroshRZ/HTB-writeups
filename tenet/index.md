@@ -347,5 +347,5 @@ root@tenet:~# cat root.txt
 root@tenet:~# 
 ```
 
-Finish!
-by [KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)
+Finish!\
+[KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)
