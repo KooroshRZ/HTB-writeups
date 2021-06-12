@@ -348,3 +348,4 @@ root@tenet:~#
 ```
 
 Finish!
+by [KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)
