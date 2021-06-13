@@ -99,8 +99,8 @@ $app -> update_db();
 
 As we see user input named `arepo` in GET request is being unserialized directly without sanitization, so we can abuse this to inject our malicious php object
 
-## 3- PHP Object Injection
-For php object injection we should have a PHP Class with a specific magic method `__destruct` or `__wakeup`
+## 3- PHP Deserialization Vulnerability
+For exploiting PHP deserialization and PHP object injection, we should have a PHP Class with a specific magic method `__destruct` or `__wakeup`
 
 Here we have a class named `DatabaseExport` with `__destruct` method which satisfies our condition
 
@@ -194,7 +194,7 @@ www-data@tenet:/var/www/html/wordpress$
 ```
 <br>
 
-If you want to learn more about PHP Object Injection read [OWASP](https://owasp.org/www-community/vulnerabilities/PHP_Object_Injection)
+If you want to learn more about PHP Object Injection read [OWASP PHP Object Injection](https://owasp.org/www-community/vulnerabilities/PHP_Object_Injection)
 
 ## 4- user flag -> neil
 Now we have a shell as `www-data` user, let's find a way to escalate to neil user\
