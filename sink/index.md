@@ -25,6 +25,7 @@ Sink is an insane linux box created by MrR3boot involves these overall steps:
 
 # nmap
 First of all nmap scan shows us there are 3 ports open:
+
 ```bash
 Starting Nmap 7.80 ( https://nmap.org ) at 2021-07-08 15:39 +0430
 Nmap scan report for sink.htb (10.10.10.225)   
@@ -121,6 +122,7 @@ If we visit the mentioned link for [portswigger](https://portswigger.net/researc
 Let's deep dive into port 5000!
 
 Here is a normal HTTP HEAD request which shows us the Gunicorn Webserver
+
 ```bash
 $ curl -I --head http://10.10.10.225:5000
 HTTP/1.1 200 OK
@@ -133,6 +135,7 @@ X-Served-By: 5e2c45dfa518
 ```
 
 But if we send a malformed HTTP request to port 5000, we get a different message which shows the frontend reverse proxy
+
 ```bash
 $ nc 10.10.10.225 5000
 JUNK REQEUST
@@ -289,6 +292,7 @@ I also tried several `Content-Length` with 50,100,150,200,250,300,400 and each o
 ![gunicorn-smuggle-content-length](./images/gunicorn-smuggle-content-length.png)
 
 So we have the admin's session
+
 ```http
 session=eyJlbWFpbCI6ImFkbWluQHNpbmsuaHRiIn0.YOaLxA.Hc5YUCGPnYgbo0lLtkQWczqWJXo
 ```
@@ -301,6 +305,7 @@ Now we are admin and we can see admin's notes
 ![admin-note](./images/admin-note.png)
 
 Let's open the notes and we can see some credentials for some users and domains
+
 ```txt
 Chef Login : http://chef.sink.htb Username : chefadm Password : /6'fEGC&zEx{4]zz
 Dev Node URL : http://code.sink.htb Username : root Password : FaH@3L>Z3})zzfQ3
@@ -344,6 +349,7 @@ Let's check open ports inside the box
 
 As we can see there is local servicerunning locally on port 4566\
 Let' see what is that
+
 ```bash
 marcus@sink:~$ curl -i localhost:4566/
 HTTP/1.1 404 
@@ -379,7 +385,7 @@ Let's enumerate this aws instance with `awslocal` command
 
 ## AWS logs service
 
-1. Describe Log Groups
+Describe Log Groups
 
 ```bash
 awslocal logs describe-log-groups --endpoint-url http://127.0.0.1:4566
@@ -397,7 +403,7 @@ awslocal logs describe-log-groups --endpoint-url http://127.0.0.1:4566
 }
 ```
 
-2. Describe Log Strems of `cloudtrail`
+Describe Log Strems of `cloudtrail`
 
 ```bash
 aws logs describe-log-streams --log-group-name cloudtrail --endpoint-url http://127.0.0.1:4566
@@ -418,7 +424,7 @@ aws logs describe-log-streams --log-group-name cloudtrail --endpoint-url http://
 }
 ```
 
-3. Get Log Events of `20201222` stream
+Get Log Events of `20201222` stream
 
 ```bash
 aws logs get-log-events --log-group-name cloudtrail --log-stream-name 20201222 --endpoint-url http://localhost:4566
@@ -473,7 +479,7 @@ If you want to read more about it see [get-log-events](https://docs.aws.amazon.c
 
 Let's enumerate `secretsmanager` service to see what can we get
 
-1. List Secrets
+List Secrets
 
 ```bash
 aws secretsmanager list-secrets --endpoint-url http://localhost:4566
@@ -536,7 +542,7 @@ aws secretsmanager list-secrets --endpoint-url http://localhost:4566
 ```
 
 Here are 3 secrets let's grab their values with their `ARN` names
-2. Get Secret Value
+Get Secret Value
 
 Jenkins Login secret
 
@@ -607,7 +613,7 @@ So we need some type of key, Looks like there should be something interesting in
 ## KMS Service
 
 This is our last service and it's a `key management service`\
-1. Let's first list the key
+Let's first list the key
 
 ```bash
 awslocal kms list-keys --endpoint-url http://localhost:4566
@@ -677,7 +683,7 @@ Ok we have a bunch of random key Ids which we can use for decryption
 |10|f0579746-10c3-4fd1-b2ab-f312a5a0f3fc|
 |11|f2358fef-e813-4c59-87c8-70e50f6d4f70|
 
-2. Let's use these keys to decrypt that `servers.enc` file\
+Let's use these keys to decrypt that `servers.enc` file\
 According to [AWS kms decrypt documentations](https://docs.aws.amazon.com/cli/latest/reference/kms/index.html)
 
 ```bash
@@ -693,7 +699,7 @@ We need
 + cipher file
 + key id
 The important thing that doen not exsit in this example and it is necessary for decrypting the file is `EncryptionAlgorithm`, which is mentioned at the end of the document.\
-3. So with this final command we can decrypt the `servers.enc` file
+So with this final command we can decrypt the `servers.enc` file
 
 ```bash
 awslocal kms decrypt --key-id <KEY-ID> --encryption-algorithm RSAES_OAEP_SHA_256 --ciphertext-blob fileb:///home/david/Projects/Prod_Deployment/servers.enc --output text --query Plaintext --endpoint-url http://localhost:4566 | base64 --decode > file.dec
@@ -709,7 +715,7 @@ An error occurred (DisabledException) when calling the Decrypt operation: 881df7
 
 ```
 
-4. After examining all of them, key number 6 with key-id `804125db-bdf1-465a-a058-07fc87c0fad0` will decrypt the file successfully\
+After examining all of them, key number 6 with key-id `804125db-bdf1-465a-a058-07fc87c0fad0` will decrypt the file successfully\
 So the final command for decryption is
 
 ```bash
