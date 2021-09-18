@@ -46,6 +46,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 
 Let's browse port 3000 and we see it's a gitea instance
+
 ![gitea](./images/gitea.png)
 
 
@@ -78,6 +79,7 @@ Looks like we can register and login. Let's do it.
 
 Here we are in port 5000 and logged in
 we have a session which looks like a jwt base64 and decoding it gives us nothing really
+
 ![gunicorn-session](./images/gunicorn-session.png)
 ![gunicorn-index](./images/gunicorn-index.png)
 
@@ -92,6 +94,7 @@ We can write some notes and read them, but we can't read other users' notes whic
 ![gunicorn-notes1](./images/gunicorn-notes1.png)
 
 There is also a comment section 
+
 ![gunicorn-comments](./images/gunicorn-comments.png)
 
 Looks like we've done with this part too\
@@ -281,9 +284,11 @@ We should consider some important notes as mentioned in the PoC link
 	+ The `Content-Length` which it's value is dynamic, the higher number you put for it the more characters of admin's request you would capture
 
 So here is the full request
+
 ![burp-smuggle](./images/burp-smuggle.png)
 
 And here is the result, yea we got the admin's request which is about deleting a note
+
 ![gunicorn-smuggle](./images/gunicorn-smuggle.png)
 
 
@@ -345,6 +350,7 @@ marcus@sink:~$
 
 # Privilege Escalation
 Let's check open ports inside the box
+
 ![open-ports](./images/open-ports.png)
 
 As we can see there is local servicerunning locally on port 4566\
@@ -365,6 +371,7 @@ server: hypercorn-h11
 
 {"status": "running"}
 ```
+
 OK, Looks like it is an `AWS` instance 
 Let's see what services are running on that\
 We can do it by just curling the `/health` endpoint
@@ -606,7 +613,9 @@ Yess we can change user to david with `david` username and it's password "EALB=b
 ![david](./images/david.png)
 
 If we explore david's home directory we can find a file named `servers.enc` which looks like it's been encrypted with some keys
+
 ![enc-file](./images/enc-file.png)
+
 So we need some type of key, Looks like there should be something interesting in `kms` service
 
 
