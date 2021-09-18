@@ -49,13 +49,11 @@ Let's browse port 3000 and we see it's a gitea instance
 
 ![gitea](./images/gitea.png)
 
-
 We don't have any creds, and also the `Forgot Password` functionality is disabled, so nothing more here
 
 ![gitea-login](./images/gitea0.png)
 
 ![gitea-forgot](./images/gitea1.png)
-
 
 Let's see explore tab, and we see there are 3 users
 
@@ -84,7 +82,6 @@ we have a session which looks like a jwt base64 and decoding it gives us nothing
 ![gunicorn-index](./images/gunicorn-index.png)
 
 There are a lot of links that go nowhere!
-
 
 There is an interesting link `notes`, let's check that\
 We can write some notes and read them, but we can't read other users' notes which gives us an HTTP 500 error!
