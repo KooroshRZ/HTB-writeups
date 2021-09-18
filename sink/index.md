@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="file:///home/kourosh/CTF/HackTheBox/Machines/Sink_UR/images/info.png">
+	<img src="./images/info.png">
 </div>
 
 | Name             | Tenet                                                                                                  |
