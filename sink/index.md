@@ -164,7 +164,7 @@ For HTTP Request Smuggling I highly recommend studying these links
 + [HTTP Desync Attacks Request Smuggling Reborn](https://portswigger.net/research/http-desync-attacks-request-smuggling-reborn)
 + [HTTP Desync Attacks What Happened Next](https://portswigger.net/research/http-desync-attacks-what-happened-next)
 
-And After them try to solve this [lab from portswigger](https://portswigger.net/web-security/request-smuggling/exploiting/lab-capture-other-users-requests) which is about capturing others users' reqeusts with HTTP Request Smuggling.
+And after them try to solve this [lab from portswigger](https://portswigger.net/web-security/request-smuggling/exploiting/lab-capture-other-users-requests) which is about capturing others users' reqeusts with HTTP Request Smuggling.
 
 Capturing others user's request looks interesting, maybe we can capture the admin's request.
 Let's check the [PoC](https://nathandavison.com/blog/haproxy-http-request-smuggling) for haproxy HTTP Request Smuggling which is for CVE-2019-18277
@@ -350,7 +350,7 @@ Let's check open ports inside the box
 
 ![open-ports](./images/open-ports.png)
 
-As we can see there is local servicerunning locally on port 4566\
+As we can see there is local service running locally on port 4566\
 Let' see what is that
 
 ```bash
@@ -410,7 +410,7 @@ awslocal logs describe-log-groups --endpoint-url http://127.0.0.1:4566
 Describe Log Strems of `cloudtrail`
 
 ```bash
-aws logs describe-log-streams --log-group-name cloudtrail --endpoint-url http://127.0.0.1:4566
+awslocal logs describe-log-streams --log-group-name cloudtrail --endpoint-url http://127.0.0.1:4566
 
 {
     "logStreams": [
@@ -431,7 +431,7 @@ aws logs describe-log-streams --log-group-name cloudtrail --endpoint-url http://
 Get Log Events of `20201222` stream
 
 ```bash
-aws logs get-log-events --log-group-name cloudtrail --log-stream-name 20201222 --endpoint-url http://localhost:4566
+awslocal logs get-log-events --log-group-name cloudtrail --log-stream-name 20201222 --endpoint-url http://localhost:4566
 
 {
     "events": [
@@ -486,7 +486,7 @@ Let's enumerate `secretsmanager` service to see what can we get
 List Secrets
 
 ```bash
-aws secretsmanager list-secrets --endpoint-url http://localhost:4566
+awslocal secretsmanager list-secrets --endpoint-url http://localhost:4566
 
 {
     "SecretList": [
