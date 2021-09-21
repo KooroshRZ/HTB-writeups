@@ -477,7 +477,7 @@ awslocal logs get-log-events --log-group-name cloudtrail --log-stream-name 20201
 ```
 
 Seems nothing special in the `logs` service\
-If you want to read more about it see [get-log-events](https://docs.aws.amazon.com/cli/latest/reference/logs/get-log-events.html)
+If you want to read more about it see [get-log-events](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/logs/get-log-events.html)
 
 ## AWS secretsmanager service
 
@@ -546,6 +546,7 @@ awslocal secretsmanager list-secrets --endpoint-url http://localhost:4566
 ```
 
 Here are 3 secrets let's grab their values with their `ARN` names
+
 Get Secret Value
 
 Jenkins Login secret
@@ -596,11 +597,11 @@ awslocal secretsmanager  get-secret-value --secret-id 'arn:aws:secretsmanager:us
 }
 ```
 
-If you want to read more about this service see [secretsmanager](https://docs.aws.amazon.com/cli/latest/reference/secretsmanager/index.html)
+If you want to read more about this service see [secretsmanager](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/secretsmanager/index.html)
 
 |username|password|
 |:-------|:-------|
-|john@sink.htb|R);\\\\)ShS99mZ~8j|
+|john@sink.htb|R);\\)ShS99mZ~8j|
 |albert@sink.htb|Welcome123!|
 |david@sink.htb|EALB=bcC=\`a7f2#k|
 
@@ -690,7 +691,7 @@ Ok we have a bunch of random key Ids which we can use for decryption
 |11|f2358fef-e813-4c59-87c8-70e50f6d4f70|
 
 Let's use these keys to decrypt that `servers.enc` file\
-According to [AWS kms decrypt documentations](https://docs.aws.amazon.com/cli/latest/reference/kms/index.html)
+According to [AWS kms decrypt documentations](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/kms/decrypt.html)
 
 ```bash
 awslocal kms decrypt \
@@ -704,7 +705,8 @@ awslocal kms decrypt \
 We need
 + cipher file
 + key id
-The important thing that doen not exsit in this example and it is necessary for decrypting the file is `EncryptionAlgorithm`, which is mentioned at the end of the document.\
+
+The important thing that does not exsit in this example and it is necessary for decrypting the file is `EncryptionAlgorithm`, which is mentioned at the end of the document.\
 So with this final command we can decrypt the `servers.enc` file
 
 ```bash
@@ -728,9 +730,11 @@ So the final command for decryption is
 david@sink:~/Projects/Prod_Deployment$ awslocal kms decrypt --key-id 804125db-bdf1-465a-a058-07fc87c0fad0 --encryption-algorithm RSAES_OAEP_SHA_256 --ciphertext-blob fileb:///home/david/Projects/Prod_Deployment/servers.enc --output text --query Plaintext --endpoint-url http://localhost:4566 | base64 --decode > file.dec
 david@sink:~/Projects/Prod_Deployment$ file file.dec 
 file.dec: gzip compressed data, from Unix, original size modulo 2^32 10240
+
 david@sink:~/Projects/Prod_Deployment$ tar -xvf file.dec
 servers.yml
 servers.sig
+
 david@sink:~/Projects/Prod_Deployment$ ls -la
 total 24
 drwxrwx--- 2 david david 4096 Sep 15 23:00 .
@@ -739,6 +743,7 @@ drwxr-x--- 3 david david 4096 Dec  2  2020 ..
 -rw-r----- 1 david david  512 Feb  1  2021 servers.enc
 -rw-r--r-- 1 david david  137 Jan  4  2021 servers.sig
 -rw-r--r-- 1 david david  139 Jan  4  2021 servers.yml
+
 david@sink:~/Projects/Prod_Deployment$ cat servers.yml 
 server:
   listenaddr: ""
@@ -770,4 +775,4 @@ root@sink:~# cat root.txt
 root@sink:~# 
 ```
 
-Wrtiten by [KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)
+Written by [KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)
