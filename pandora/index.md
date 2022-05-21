@@ -91,8 +91,8 @@ Let's try this one on SSH, Yay we can login to the box with daniel user.
 # Foothold
 We have shell as `daniel` but we can't rad user flag because it's for `matt` user so we need to find a way to escalate privilege to `matt` user\
 Lets enumerate inside the box to see what we can find.\
-Here is a service on `/var/www/pabdora/` which seems to be a monitoring service according to this [link](https://pandorafms.com/en/).
-![pabdora-console](./images/pabdora-console.png)
+Here is a service on `/var/www/pandora/` which seems to be a monitoring service according to this [link](https://pandorafms.com/en/).
+![pandora-console](./images/pandora-console.png)
 
 It seems that there is a virtual host named `pandora` but we couldn't see it from port 80\
 Let's see apache config files:
