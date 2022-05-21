@@ -347,3 +347,4 @@ root@tenet:~# cat root.txt
 root@tenet:~# 
 ```
 
+> Written by [KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)

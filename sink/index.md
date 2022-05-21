@@ -775,4 +775,4 @@ root@sink:~# cat root.txt
 root@sink:~# 
 ```
 
-Written by [KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)
+> Written by [KRyptonZ](https://www.hackthebox.eu/home/users/profile/372989)
